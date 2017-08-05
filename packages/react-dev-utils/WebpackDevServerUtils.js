@@ -187,7 +187,7 @@ function createCompiler(webpack, config, appName, urls, useYarn) {
       );
       console.log(
         'To ignore, add ' +
-          chalk.cyan('// eslint-disable-next-line') +
+          chalk.cyan('// tslint:disable-next-line') +
           ' to the line before.\n'
       );
     }

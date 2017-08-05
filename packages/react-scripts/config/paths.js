@@ -1,12 +1,12 @@
 // @remove-on-eject-begin
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
+* Copyright (c) 2015-present, Facebook, Inc.
+* All rights reserved.
+*
+* This source code is licensed under the BSD-style license found in the
+* LICENSE file in the root directory of this source tree. An additional grant
+* of patent rights can be found in the PATENTS file in the same directory.
+*/
 // @remove-on-eject-end
 'use strict';
 
@@ -54,12 +54,14 @@ module.exports = {
   appBuild: resolveApp('build'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveApp('src/index.js'),
+  appIndexJs: resolveApp('src/index.tsx'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   yarnLockFile: resolveApp('yarn.lock'),
-  testsSetup: resolveApp('src/setupTests.js'),
+  testsSetup: resolveApp('src/setupTests.ts'),
   appNodeModules: resolveApp('node_modules'),
+  appTsConfig: resolveApp('tsconfig.json'),
+  appTsTestConfig: resolveApp('tsconfig.test.json'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
 };
@@ -74,12 +76,14 @@ module.exports = {
   appBuild: resolveApp('build'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveApp('src/index.js'),
+  appIndexJs: resolveApp('src/index.tsx'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   yarnLockFile: resolveApp('yarn.lock'),
-  testsSetup: resolveApp('src/setupTests.js'),
+  testsSetup: resolveApp('src/setupTests.ts'),
   appNodeModules: resolveApp('node_modules'),
+  appTsConfig: resolveApp('tsconfig.json'),
+  appTsTestConfig: resolveApp('tsconfig.test.json'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   // These properties only exist before ejecting:
@@ -104,12 +108,14 @@ if (
     appBuild: resolveOwn('../../build'),
     appPublic: resolveOwn('template/public'),
     appHtml: resolveOwn('template/public/index.html'),
-    appIndexJs: resolveOwn('template/src/index.js'),
+    appIndexJs: resolveOwn('template/src/index.tsx'),
     appPackageJson: resolveOwn('package.json'),
     appSrc: resolveOwn('template/src'),
     yarnLockFile: resolveOwn('template/yarn.lock'),
-    testsSetup: resolveOwn('template/src/setupTests.js'),
+    testsSetup: resolveOwn('template/src/setupTests.ts'),
     appNodeModules: resolveOwn('node_modules'),
+    appTsConfig: resolveOwn('template/tsconfig.json'),
+    appTsTestConfig: resolveOwn('template/tsconfig.test.json'),
     publicUrl: getPublicUrl(resolveOwn('package.json')),
     servedPath: getServedPath(resolveOwn('package.json')),
     // These properties only exist before ejecting:

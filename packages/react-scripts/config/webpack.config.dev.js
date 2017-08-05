@@ -1,12 +1,12 @@
 // @remove-on-eject-begin
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
+* Copyright (c) 2015-present, Facebook, Inc.
+* All rights reserved.
+*
+* This source code is licensed under the BSD-style license found in the
+* LICENSE file in the root directory of this source tree. An additional grant
+* of patent rights can be found in the PATENTS file in the same directory.
+*/
 // @remove-on-eject-end
 'use strict';
 
@@ -96,7 +96,7 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: ['.web.js', '.js', '.json', '.web.jsx', '.jsx'],
+    extensions: ['.js', '.jsx', '.web.ts', '.web.tsx', '.ts', '.tsx', '.json'],
     alias: {
       // @remove-on-eject-begin
       // Resolve Babel runtime relative to react-scripts.
@@ -130,24 +130,15 @@ module.exports = {
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx)$/,
         enforce: 'pre',
-        use: [
-          {
-            options: {
-              formatter: eslintFormatter,
-              eslintPath: require.resolve('eslint'),
-              // @remove-on-eject-begin
-              baseConfig: {
-                extends: [require.resolve('eslint-config-react-app')],
-              },
-              ignore: false,
-              useEslintrc: false,
-              // @remove-on-eject-end
-            },
-            loader: require.resolve('eslint-loader'),
-          },
-        ],
+        loader: require.resolve('tslint-loader'),
+        include: paths.appSrc,
+      },
+      {
+        test: /\.js$/,
+        loader: require.resolve('source-map-loader'),
+        enforce: 'pre',
         include: paths.appSrc,
       },
       {
@@ -168,19 +159,9 @@ module.exports = {
           },
           // Process JS with Babel.
           {
-            test: /\.(js|jsx)$/,
+            test: /\.(ts|tsx)$/,
             include: paths.appSrc,
-            loader: require.resolve('babel-loader'),
-            options: {
-              // @remove-on-eject-begin
-              babelrc: false,
-              presets: [require.resolve('babel-preset-react-app')],
-              // @remove-on-eject-end
-              // This is a feature of `babel-loader` for webpack (not Babel itself).
-              // It enables caching results in ./node_modules/.cache/babel-loader/
-              // directory for faster rebuilds.
-              cacheDirectory: true,
-            },
+            loader: require.resolve('ts-loader'),
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -229,7 +210,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/],
+            exclude: [/\.(js|jsx)$/, /\.(ts|tsx)$/, /\.html$/, /\.json$/],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/media/[name].[hash:8].[ext]',
