@@ -1,9 +1,11 @@
 .idea/
 .vscode/
+.awcache/
 node_modules/
 build
 .DS_Store
 *.tgz
+*.css.d.ts
 my-app*
 template/src/__tests__/__snapshots__/
 lerna-debug.log

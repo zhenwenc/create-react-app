@@ -35,6 +35,7 @@ const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('zc-react-dev-utils/printBuildError');
+const createTypedCssModules = require('./utils/createTypedCssModules');
 
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
@@ -59,8 +60,11 @@ measureFileSizesBeforeBuild(paths.appBuild)
     fs.emptyDirSync(paths.appBuild);
     // Merge with the public folder
     copyPublicFolder();
+
     // Start the webpack build
-    return build(previousFileSizes);
+    return createTypedCssModules().then(() => {
+      return build(previousFileSizes);
+    });
   })
   .then(
     ({ stats, previousFileSizes, warnings }) => {

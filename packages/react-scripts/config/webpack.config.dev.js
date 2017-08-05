@@ -17,10 +17,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const postcssImport = require('postcss-import');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
+
+const atlTsLoader = require('awesome-typescript-loader');
+const AtlConfigPathsPlugin = atlTsLoader.TsConfigPathsPlugin;
+const AtlCheckerPlugin = atlTsLoader.CheckerPlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -96,7 +100,7 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: ['.js', '.jsx', '.web.ts', '.web.tsx', '.ts', '.tsx', '.json'],
+    extensions: ['.web.ts', '.web.tsx', '.ts', '.tsx', '.js', '.jsx', '.json'],
     alias: {
       // @remove-on-eject-begin
       // Resolve Babel runtime relative to react-scripts.
@@ -118,6 +122,9 @@ module.exports = {
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+      // To use paths and baseUrl feature of TS 2.0.
+      // This is required for awesome-typescript-loader
+      new AtlConfigPathsPlugin({ configFileName: paths.appTsConfig }),
     ],
   },
   module: {
@@ -165,7 +172,11 @@ module.exports = {
           {
             test: /\.(ts|tsx)$/,
             include: paths.appSrc,
-            loader: require.resolve('ts-loader'),
+            loader: require.resolve('awesome-typescript-loader'),
+            options: {
+              useCache: true,
+              configFileName: paths.appTsConfig,
+            },
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -175,11 +186,25 @@ module.exports = {
           {
             test: /\.css$/,
             use: [
-              require.resolve('style-loader'),
+              {
+                // Necessary for css-modules-loader
+                loader: require.resolve('style-loader'),
+              },
               {
                 loader: require.resolve('css-loader'),
                 options: {
+                  sourceMap: true,
+                  minimize: false,
+                  camelCase: true,
+                  modules: true,
                   importLoaders: 1,
+                  localIdentName: '[name]__[local]--[hash:base64:5]',
+                },
+              },
+              {
+                loader: require.resolve('./typedCssModulesLoader'),
+                options: {
+                  camelCase: 'dashes',
                 },
               },
               {
@@ -190,6 +215,9 @@ module.exports = {
                   ident: 'postcss',
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
+                    postcssImport({
+                      path: [path.resolve(paths.appSrc, './styles')],
+                    }),
                     autoprefixer({
                       browsers: [
                         '>1%',
@@ -259,6 +287,13 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // Prevent webpack recompiling been triggered by generated .css.d.ts files
+    // from typed-css-modules loader.
+    // https://github.com/Jimdo/typings-for-css-modules-loader
+    new webpack.WatchIgnorePlugin([/css\.d\.ts$/]),
+    // Required for awesome-typescript-loader. This can be removed after
+    // https://github.com/webpack/webpack/issues/3460 is resolved.
+    new AtlCheckerPlugin(),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

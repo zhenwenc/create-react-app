@@ -20,7 +20,12 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./paths');
+const postcssImport = require('postcss-import');
 const getClientEnvironment = require('./env');
+
+const atlTsLoader = require('awesome-typescript-loader');
+const AtlConfigPathsPlugin = atlTsLoader.TsConfigPathsPlugin;
+const AtlCheckerPlugin = atlTsLoader.CheckerPlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -97,7 +102,7 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: ['.js', '.jsx', '.web.ts', '.web.tsx', '.ts', '.tsx', '.json'],
+    extensions: ['.web.ts', '.web.tsx', '.ts', '.tsx', '.js', '.jsx', '.json'],
     alias: {
       // @remove-on-eject-begin
       // Resolve Babel runtime relative to react-scripts.
@@ -119,6 +124,9 @@ module.exports = {
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+      // To use paths and baseUrl feature of TS 2.0.
+      // This is required for awesome-typescript-loader
+      new AtlConfigPathsPlugin({ configFileName: paths.appTsConfig }),
     ],
   },
   module: {
@@ -161,7 +169,11 @@ module.exports = {
           {
             test: /\.(ts|tsx)$/,
             include: paths.appSrc,
-            loader: require.resolve('ts-loader'),
+            loader: require.resolve('awesome-typescript-loader'),
+            options: {
+              useCache: false,
+              configFileName: paths.appTsConfig,
+            },
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
@@ -180,6 +192,7 @@ module.exports = {
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
+                  // Necessary for css-modules-loader
                   fallback: require.resolve('style-loader'),
                   use: [
                     {
@@ -188,6 +201,15 @@ module.exports = {
                         importLoaders: 1,
                         minimize: true,
                         sourceMap: shouldUseSourceMap,
+                        camelCase: true,
+                        modules: true,
+                        localIdentName: '[name]__[local]--[hash:base64:5]',
+                      },
+                    },
+                    {
+                      loader: require.resolve('./typedCssModulesLoader'),
+                      options: {
+                        camelCase: 'dashes',
                       },
                     },
                     {
@@ -198,6 +220,9 @@ module.exports = {
                         ident: 'postcss',
                         plugins: () => [
                           require('postcss-flexbugs-fixes'),
+                          postcssImport({
+                            path: [path.resolve(paths.appSrc, './styles')],
+                          }),
                           autoprefixer({
                             browsers: [
                               '>1%',
@@ -331,6 +356,9 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // Required for awesome-typescript-loader. This can be removed after
+    // https://github.com/webpack/webpack/issues/3460 is resolved.
+    new AtlCheckerPlugin(),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
