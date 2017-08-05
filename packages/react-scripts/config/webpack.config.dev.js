@@ -134,6 +134,10 @@ module.exports = {
         enforce: 'pre',
         loader: require.resolve('tslint-loader'),
         include: paths.appSrc,
+        options: {
+          emitErrors: false,
+          failOnHint: false,
+        },
       },
       {
         test: /\.js$/,
