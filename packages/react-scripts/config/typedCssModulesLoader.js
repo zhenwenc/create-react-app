@@ -1,8 +1,38 @@
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const DtsCreator = require('typed-css-modules');
 const loaderUtils = require('loader-utils');
+
+// Avoid rewriting css type definitions if there is no change.
+// This hack is to prevent multiple recompiling triggered by webpack.
+// https://github.com/webpack/watchpack/issues/25
+const cached = (function cacheBuilder() {
+  const cache = {};
+
+  function getCacheOrLoad(filePath) {
+    if (!cache[filePath] && fs.existsSync(filePath)) {
+      cache[filePath] = fs
+        .readFileSync(filePath, { encoding: 'UTF8' })
+        .replace(/\r?\n?[^\r\n]*$/g, '');
+    }
+    return cache[filePath];
+  }
+
+  function updateCache(filePath, content) {
+    const oldValue = getCacheOrLoad(filePath);
+    const newValue = content;
+    if (oldValue !== newValue) {
+      cache[filePath] = newValue;
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  return updateCache;
+})();
 
 module.exports = function(source, map) {
   this.cacheable && this.cacheable();
@@ -19,14 +49,25 @@ module.exports = function(source, map) {
   // creator.create(..., source) tells the module to operate on the
   // source variable. Check API for more details.
   creator.create(this.resourcePath, source).then(content => {
-    // Emit the created content as well
-    this.emitFile(
-      path.relative(this.options.context, content.outputFilePath),
-      content.contents || [''],
-      map
-    );
-    content.writeFile().then(() => {
+    if (
+      options.useCache === false ||
+      !cached(content.outputFilePath, content.formatted)
+    ) {
+      // Emit the created content as well
+      this.emitFile(
+        path.relative(this.options.context, content.outputFilePath),
+        content.contents || [''],
+        map
+      );
+
+      // Output to file
+      console.log('[tcm] Wrote ' + content.outputFilePath);
+      content.writeFile().then(() => {
+        callback(null, source, map);
+      });
+    } else {
       callback(null, source, map);
-    });
+      return;
+    }
   });
 };
