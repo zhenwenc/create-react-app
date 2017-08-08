@@ -10,7 +10,6 @@
 // @remove-on-eject-end
 'use strict';
 
-const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -19,6 +18,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const postcssImport = require('postcss-import');
+const postcssNext = require('postcss-cssnext');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
@@ -218,15 +218,7 @@ module.exports = {
                     postcssImport({
                       path: [path.resolve(paths.appSrc, './styles')],
                     }),
-                    autoprefixer({
-                      browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
-                      ],
-                      flexbox: 'no-2009',
-                    }),
+                    postcssNext(),
                   ],
                 },
               },
