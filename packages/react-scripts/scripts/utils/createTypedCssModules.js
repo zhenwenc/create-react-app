@@ -34,7 +34,7 @@ module.exports = function() {
             console.warn(chalk.yellow('[tcm] ' + message));
           });
         })
-        .catch(reason => console.error(chalk.red('[tcm] Error ' + reason)));
+        .catch(reason => Promise.reject(chalk.red('[tcm] Error ' + reason)));
       return acc.then(() => promise);
     }, Promise.resolve());
   }
