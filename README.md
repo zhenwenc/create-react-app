@@ -2,6 +2,23 @@
 
 Use with [create-react-app](https://github.com/facebookincubator/create-react-app) for Typescript React App.
 
+## Usage
+
+Create React App with configs in this fork:
+
+```sh
+npm install -g create-react-app
+
+create-react-app my-app --scripts-version=zc-react-scripts
+cs my-app/
+npm start
+```
+
+To update the configs to latest version:
+```sh
+npm update zc-react-scripts
+```
+
 ## Additional Features
 
 We intended to minimize changes against the original repository, however there are features we would like to have but not provided. Also some Typescript related features.
