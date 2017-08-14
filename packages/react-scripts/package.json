@@ -1,5 +1,5 @@
 {
-  "version": "1.0.16",
+  "version": "1.0.22",
   "name": "zc-react-scripts",
   "description": "Configuration and scripts for Create React App.",
   "license": "BSD-3-Clause",
@@ -55,7 +55,6 @@
     "promise": "8.0.1",
     "react-dev-utils": "^3.0.2",
     "react-error-overlay": "^1.0.9",
-    "style-loader": "0.18.2",
     "source-map-loader": "^0.2.1",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",

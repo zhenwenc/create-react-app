@@ -132,6 +132,24 @@ module.exports = function(
     }
   }
 
+  // Install necessary type definitions to devDependencies.
+  const typings = [
+    '@types/node',
+    '@types/react',
+    '@types/react-dom',
+    '@types/jest',
+  ];
+
+  console.log(`Installing typings using ${command}...`);
+  console.log();
+  const proc = spawn.sync(command, args.concat(typings), {
+    stdio: 'inherit',
+  });
+  if (proc.status !== 0) {
+    console.error(`\`${command} ${args.concat(typings).join(' ')}\` failed`);
+    return;
+  }
+
   // Display the most elegant way to cd.
   // This needs to handle an undefined originalDirectory for
   // backward compatibility with old global-cli's.
