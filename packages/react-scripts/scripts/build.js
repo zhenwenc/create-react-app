@@ -34,7 +34,7 @@ const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
-const printBuildError = require('zc-react-dev-utils/printBuildError');
+const printBuildError = require('react-dev-utils/printBuildError');
 const createTypedCssModules = require('./utils/createTypedCssModules');
 
 const measureFileSizesBeforeBuild =
