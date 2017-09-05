@@ -25,7 +25,6 @@ const getClientEnvironment = require('./env');
 
 const atlTsLoader = require('awesome-typescript-loader');
 const AtlConfigPathsPlugin = atlTsLoader.TsConfigPathsPlugin;
-const AtlCheckerPlugin = atlTsLoader.CheckerPlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -347,9 +346,6 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // Required for awesome-typescript-loader. This can be removed after
-    // https://github.com/webpack/webpack/issues/3460 is resolved.
-    new AtlCheckerPlugin(),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

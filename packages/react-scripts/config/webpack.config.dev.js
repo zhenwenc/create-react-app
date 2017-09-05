@@ -24,7 +24,6 @@ const paths = require('./paths');
 
 const atlTsLoader = require('awesome-typescript-loader');
 const AtlConfigPathsPlugin = atlTsLoader.TsConfigPathsPlugin;
-const AtlCheckerPlugin = atlTsLoader.CheckerPlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -280,9 +279,6 @@ module.exports = {
     // from typed-css-modules loader.
     // https://github.com/Jimdo/typings-for-css-modules-loader
     new webpack.WatchIgnorePlugin([/css\.d\.ts$/]),
-    // Required for awesome-typescript-loader. This can be removed after
-    // https://github.com/webpack/webpack/issues/3460 is resolved.
-    new AtlCheckerPlugin(),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

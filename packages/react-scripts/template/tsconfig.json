@@ -25,9 +25,5 @@
     "webpack",
     "jest",
     "src/setupTests.ts"
-  ],
-  "awesomeTypescriptLoaderOptions": {
-    "forkChecker": true,
-    "useWebpackText": true
-  }
+  ]
 }
