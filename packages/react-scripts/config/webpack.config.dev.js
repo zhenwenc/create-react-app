@@ -172,7 +172,6 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('awesome-typescript-loader'),
             options: {
-              useCache: true,
               configFileName: paths.appTsConfig,
             },
           },
