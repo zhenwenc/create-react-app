@@ -1,5 +1,9 @@
 @import 'variables.css';
 
+html {
+  font-size: 10px;
+}
+
 .app {
   text-align: center;
 }
@@ -17,7 +21,7 @@
 }
 
 .app-intro {
-  font-size: 1.5em;
+  font-size: 1.6rem;
 }
 
 @keyframes app-logo-spin {

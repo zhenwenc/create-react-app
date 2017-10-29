@@ -17,8 +17,6 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./paths');
-const postcssImport = require('postcss-import');
-const postcssNext = require('postcss-cssnext');
 const getClientEnvironment = require('./env');
 
 const atlTsLoader = require('awesome-typescript-loader');
@@ -216,10 +214,22 @@ module.exports = {
                         ident: 'postcss',
                         plugins: () => [
                           require('postcss-flexbugs-fixes'),
-                          postcssImport({
+                          require('postcss-import')({
                             path: [path.resolve(paths.appSrc, './styles')],
                           }),
-                          postcssNext(),
+                          require('postcss-cssnext')({
+                            browsers: [
+                              '>1%',
+                              'last 4 versions',
+                              'Firefox ESR',
+                              'not ie < 9', // React doesn't support IE8 anyway
+                            ],
+                            features: {
+                              autoprefixer: {
+                                flexbox: 'no-2009',
+                              },
+                            },
+                          }),
                         ],
                       },
                     },

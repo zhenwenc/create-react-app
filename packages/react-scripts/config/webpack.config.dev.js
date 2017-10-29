@@ -15,8 +15,6 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const postcssImport = require('postcss-import');
-const postcssNext = require('postcss-cssnext');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
@@ -209,10 +207,22 @@ module.exports = {
                   ident: 'postcss',
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
-                    postcssImport({
+                    require('postcss-import')({
                       path: [path.resolve(paths.appSrc, './styles')],
                     }),
-                    postcssNext(),
+                    require('postcss-cssnext')({
+                      browsers: [
+                        '>1%',
+                        'last 4 versions',
+                        'Firefox ESR',
+                        'not ie < 9', // React doesn't support IE8 anyway
+                      ],
+                      features: {
+                        autoprefixer: {
+                          flexbox: 'no-2009',
+                        },
+                      },
+                    }),
                   ],
                 },
               },
