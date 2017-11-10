@@ -208,6 +208,7 @@ module.exports = {
                     {
                       loader: require.resolve('./typedCssModulesLoader'),
                       options: {
+                        useCache: false,
                         camelCase: 'dashes',
                       },
                     },

@@ -194,6 +194,7 @@ module.exports = {
               {
                 loader: require.resolve('./typedCssModulesLoader'),
                 options: {
+                  useCache: true,
                   camelCase: 'dashes',
                 },
               },
