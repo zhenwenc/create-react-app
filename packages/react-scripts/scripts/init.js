@@ -91,13 +91,16 @@ module.exports = function(
 
   let command;
   let args;
+  let devArgs;
 
   if (useYarn) {
     command = 'yarnpkg';
     args = ['add'];
+    devArgs = ['add', '--dev'];
   } else {
     command = 'npm';
     args = ['install', '--save', verbose && '--verbose'].filter(e => e);
+    devArgs = ['install', '--save-dev', verbose && '--verbose'].filter(e => e);
   }
   args.push('react', 'react-dom');
 
@@ -135,16 +138,16 @@ module.exports = function(
     '@types/node',
     '@types/react',
     '@types/react-dom',
-    '@types/jest',
+    '@types/jest@20.0.4',
   ];
 
   console.log(`Installing typings using ${command}...`);
   console.log();
-  const proc = spawn.sync(command, args.concat(typings), {
+  const proc = spawn.sync(command, devArgs.concat(typings), {
     stdio: 'inherit',
   });
   if (proc.status !== 0) {
-    console.error(`\`${command} ${args.concat(typings).join(' ')}\` failed`);
+    console.error(`\`${command} ${devArgs.concat(typings).join(' ')}\` failed`);
     return;
   }
 
