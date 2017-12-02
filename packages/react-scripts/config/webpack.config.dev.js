@@ -20,6 +20,7 @@ const paths = require('./paths');
 
 const atlTsLoader = require('awesome-typescript-loader');
 const AtlConfigPathsPlugin = atlTsLoader.TsConfigPathsPlugin;
+const WatchTimestampsPlugin = require('./WatchTimestampsPlugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -286,6 +287,8 @@ module.exports = {
     // from typed-css-modules loader.
     // https://github.com/Jimdo/typings-for-css-modules-loader
     new webpack.WatchIgnorePlugin([/css\.d\.ts$/]),
+    // https://github.com/Jimdo/typings-for-css-modules-loader/issues/48
+    new WatchTimestampsPlugin([/css\.d\.ts$/]),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
