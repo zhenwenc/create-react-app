@@ -19,9 +19,6 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
-const atlTsLoader = require('awesome-typescript-loader');
-const AtlConfigPathsPlugin = atlTsLoader.TsConfigPathsPlugin;
-
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
 const publicPath = paths.servedPath;
@@ -119,9 +116,6 @@ module.exports = {
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
-      // To use paths and baseUrl feature of TS 2.0.
-      // This is required for awesome-typescript-loader
-      new AtlConfigPathsPlugin({ configFileName: paths.appTsConfig }),
     ],
   },
   module: {
@@ -160,13 +154,13 @@ module.exports = {
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },
-          // Process JS with Babel.
+          // Process TypeScript files.
           {
             test: /\.(ts|tsx)$/,
             include: paths.appSrc,
-            loader: require.resolve('awesome-typescript-loader'),
+            loader: require.resolve('ts-loader'),
             options: {
-              configFileName: paths.appTsConfig,
+              configFile: paths.appTsConfig,
             },
           },
           // The notation here is somewhat confusing.
