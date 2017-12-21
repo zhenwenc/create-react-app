@@ -13,6 +13,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
@@ -280,6 +281,10 @@ module.exports = {
     // from typed-css-modules loader.
     // https://github.com/Jimdo/typings-for-css-modules-loader
     new webpack.WatchIgnorePlugin([/css\.d\.ts$/]),
+    // ts-loader requires this plugin to resolve modules according to baseUrl
+    // and paths in tsconfig.json.
+    // https://github.com/TypeStrong/ts-loader
+    new TsconfigPathsPlugin({ configFile: paths.appTsConfig }),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
