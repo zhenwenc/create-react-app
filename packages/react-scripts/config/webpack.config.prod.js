@@ -17,6 +17,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const TypedCssModulesPlugin = require('./TypedCssModulesPlugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -201,13 +202,6 @@ module.exports = {
                       },
                     },
                     {
-                      loader: require.resolve('./typedCssModulesLoader'),
-                      options: {
-                        useCache: false,
-                        camelCase: 'dashes',
-                      },
-                    },
-                    {
                       loader: require.resolve('postcss-loader'),
                       options: {
                         // Necessary for external CSS imports to work
@@ -358,6 +352,10 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // Generate type definitions for each CSS modules either before the
+    // production build starts, or before each re-compilation after watch.
+    // https://github.com/zhenwenc/create-react-app/issues/4
+    new TypedCssModulesPlugin({ useCache: true, camelCase: 'dashes' }),
     // ts-loader requires this plugin to resolve modules according to baseUrl
     // and paths in tsconfig.json.
     // https://github.com/TypeStrong/ts-loader

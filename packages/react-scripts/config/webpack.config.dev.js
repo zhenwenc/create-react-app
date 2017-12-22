@@ -15,7 +15,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-const WatchTimestampsPlugin = require('./WatchTimestampsPlugin');
+const TypedCssModulesPlugin = require('./TypedCssModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
@@ -188,13 +188,6 @@ module.exports = {
                 },
               },
               {
-                loader: require.resolve('./typedCssModulesLoader'),
-                options: {
-                  useCache: true,
-                  camelCase: 'dashes',
-                },
-              },
-              {
                 loader: require.resolve('postcss-loader'),
                 options: {
                   // Necessary for external CSS imports to work
@@ -278,17 +271,15 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // Generate type definitions for each CSS modules either before the
+    // production build starts, or before each re-compilation after watch.
+    // https://github.com/zhenwenc/create-react-app/issues/4
+    new TypedCssModulesPlugin({ useCache: true, camelCase: 'dashes' }),
     // Prevent webpack re-compiling been triggered by generated .css.d.ts files
     // from typed-css-modules loader or .js files from ts-loader.
     // https://github.com/TypeStrong/ts-loader
     // https://github.com/Jimdo/typings-for-css-modules-loader
     new webpack.WatchIgnorePlugin([/\.js$/, /\.css\.d\.ts$/]),
-    // As the generated .css.d.ts files are required while compiling TS, but
-    // they have been ignored by `WatchIgnorePlugin`. As a hacky workaround we
-    // need to ensure they are still picked up by ts-loader's caching mechanism.
-    // TODO: Is there any better solution?
-    // https://github.com/Jimdo/typings-for-css-modules-loader/issues/48
-    new WatchTimestampsPlugin([/\.css\.d\.ts$/]),
     // ts-loader requires this plugin to resolve modules according to baseUrl
     // and paths in tsconfig.json.
     // https://github.com/TypeStrong/ts-loader
