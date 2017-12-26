@@ -15,7 +15,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-const TypedCssModulesPlugin = require('./TypedCssModulesPlugin');
+const TypedCssModulesPlugin = require('../scripts/utils/TypedCssModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
@@ -274,7 +274,7 @@ module.exports = {
     // Generate type definitions for each CSS modules either before the
     // production build starts, or before each re-compilation after watch.
     // https://github.com/zhenwenc/create-react-app/issues/4
-    new TypedCssModulesPlugin({ useCache: true, camelCase: 'dashes' }),
+    new TypedCssModulesPlugin({ useCache: true }),
     // Prevent webpack re-compiling been triggered by generated .css.d.ts files
     // from typed-css-modules loader or .js files from ts-loader.
     // https://github.com/TypeStrong/ts-loader

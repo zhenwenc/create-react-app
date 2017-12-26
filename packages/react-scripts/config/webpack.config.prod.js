@@ -17,7 +17,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const TypedCssModulesPlugin = require('./TypedCssModulesPlugin');
+const TypedCssModulesPlugin = require('../scripts/utils/TypedCssModulesPlugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -355,7 +355,7 @@ module.exports = {
     // Generate type definitions for each CSS modules either before the
     // production build starts, or before each re-compilation after watch.
     // https://github.com/zhenwenc/create-react-app/issues/4
-    new TypedCssModulesPlugin({ useCache: true, camelCase: 'dashes' }),
+    new TypedCssModulesPlugin({ useCache: true }),
     // ts-loader requires this plugin to resolve modules according to baseUrl
     // and paths in tsconfig.json.
     // https://github.com/TypeStrong/ts-loader
