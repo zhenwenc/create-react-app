@@ -51,8 +51,9 @@ class TypedCssModulesPlugin {
         })
         .then(() => callback())
         .catch(reason => {
-          console.error(chalk.red('[tcm] Failed', reason));
-          callback(reason);
+          // We don't block the compilation, ts-loader should pick them up.
+          console.error(chalk.red('[tcm]', reason));
+          callback();
         });
     });
   }
