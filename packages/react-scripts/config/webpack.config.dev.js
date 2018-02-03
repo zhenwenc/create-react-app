@@ -20,6 +20,34 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
+// Options for PostCSS as we reference these options twice
+// Adds vendor prefixing based on your specified browser support in
+// package.json
+const postCSSLoaderOptions = {
+  // Necessary for external CSS imports to work
+  // https://github.com/facebookincubator/create-react-app/issues/2677
+  ident: 'postcss',
+  plugins: () => [
+    require('postcss-flexbugs-fixes'),
+    require('postcss-import')({
+      path: [path.resolve(paths.appStyles)],
+    }),
+    require('postcss-cssnext')({
+      browsers: [
+        '>1%',
+        'last 4 versions',
+        'Firefox ESR',
+        'not ie < 9', // React doesn't support IE8 anyway
+      ],
+      features: {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+      },
+    }),
+  ],
+};
+
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 const publicPath = '/';
@@ -171,6 +199,25 @@ module.exports = {
           // in development "style" loader enables hot editing of CSS.
           {
             test: /\.css$/,
+            include: paths.appNodeModules,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1,
+                },
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: postCSSLoaderOptions,
+              },
+            ],
+          },
+          // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
+          {
+            test: /\.css$/,
+            include: paths.appSrc,
             use: [
               {
                 // Necessary for css-modules-loader
@@ -179,40 +226,15 @@ module.exports = {
               {
                 loader: require.resolve('css-loader'),
                 options: {
-                  sourceMap: true,
-                  minimize: false,
-                  camelCase: true,
                   modules: true,
+                  camelCase: true,
                   importLoaders: 1,
                   localIdentName: '[name]__[local]--[hash:base64:5]',
                 },
               },
               {
                 loader: require.resolve('postcss-loader'),
-                options: {
-                  // Necessary for external CSS imports to work
-                  // https://github.com/facebookincubator/create-react-app/issues/2677
-                  ident: 'postcss',
-                  plugins: () => [
-                    require('postcss-flexbugs-fixes'),
-                    require('postcss-import')({
-                      path: [path.resolve(paths.appSrc, './styles')],
-                    }),
-                    require('postcss-cssnext')({
-                      browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
-                      ],
-                      features: {
-                        autoprefixer: {
-                          flexbox: 'no-2009',
-                        },
-                      },
-                    }),
-                  ],
-                },
+                options: postCSSLoaderOptions,
               },
             ],
           },

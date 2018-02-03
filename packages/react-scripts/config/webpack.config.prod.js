@@ -54,6 +54,34 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
     { publicPath: Array(cssFilename.split('/').length).join('../') }
   : {};
 
+// Options for PostCSS as we reference these options twice
+// Adds vendor prefixing based on your specified browser support in
+// package.json
+const postCSSLoaderOptions = {
+  // Necessary for external CSS imports to work
+  // https://github.com/facebookincubator/create-react-app/issues/2677
+  ident: 'postcss',
+  plugins: () => [
+    require('postcss-flexbugs-fixes'),
+    require('postcss-import')({
+      path: [path.resolve(paths.appStyles)],
+    }),
+    require('postcss-cssnext')({
+      browsers: [
+        '>1%',
+        'last 4 versions',
+        'Firefox ESR',
+        'not ie < 9', // React doesn't support IE8 anyway
+      ],
+      features: {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+      },
+    }),
+  ],
+};
+
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
 // The development configuration is different and lives in a separate file.
@@ -179,6 +207,40 @@ module.exports = {
           // in the main CSS file.
           {
             test: /\.css$/,
+            include: paths.appNodeModules,
+            loader: ExtractTextPlugin.extract(
+              Object.assign(
+                {
+                  fallback: {
+                    loader: require.resolve('style-loader'),
+                    options: {
+                      hmr: false,
+                    },
+                  },
+                  use: [
+                    {
+                      loader: require.resolve('css-loader'),
+                      options: {
+                        importLoaders: 1,
+                        minimize: true,
+                        sourceMap: shouldUseSourceMap,
+                      },
+                    },
+                    {
+                      loader: require.resolve('postcss-loader'),
+                      options: postCSSLoaderOptions,
+                    },
+                  ],
+                },
+                extractTextPluginOptions
+              )
+            ),
+            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+          },
+          // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
+          {
+            test: /\.css$/,
+            include: paths.appSrc,
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
@@ -203,30 +265,7 @@ module.exports = {
                     },
                     {
                       loader: require.resolve('postcss-loader'),
-                      options: {
-                        // Necessary for external CSS imports to work
-                        // https://github.com/facebookincubator/create-react-app/issues/2677
-                        ident: 'postcss',
-                        plugins: () => [
-                          require('postcss-flexbugs-fixes'),
-                          require('postcss-import')({
-                            path: [path.resolve(paths.appSrc, './styles')],
-                          }),
-                          require('postcss-cssnext')({
-                            browsers: [
-                              '>1%',
-                              'last 4 versions',
-                              'Firefox ESR',
-                              'not ie < 9', // React doesn't support IE8 anyway
-                            ],
-                            features: {
-                              autoprefixer: {
-                                flexbox: 'no-2009',
-                              },
-                            },
-                          }),
-                        ],
-                      },
+                      options: postCSSLoaderOptions,
                     },
                   ],
                 },
